@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.unity.inputsystem": "1.20.0",
     "com.unity.multiplayer.center": "1.0.1",
     "com.unity.postprocessing": "3.5.4",
     "com.unity.modules.accessibility": "1.0.0",

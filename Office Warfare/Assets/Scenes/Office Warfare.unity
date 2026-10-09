@@ -5206,6 +5206,7 @@ GameObject:
   - component: {fileID: 846350675}
   - component: {fileID: 846350674}
   - component: {fileID: 846350679}
+  - component: {fileID: 846350680}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -5251,17 +5252,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6607c9bb7d19554aadc81f80aa811f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 8
-  gravityModifier: 2
-  jumpPower: 8
-  charCon: {fileID: 846350674}
-  camTransform: {fileID: 609830375}
-  mouseSensitivity: 2
-  animator: {fileID: 0}
-  groundCheckPoint: {fileID: 1756796250}
-  whatIsGround:
-    serializedVersion: 2
-    m_Bits: 8
+  _input: {fileID: 11400000, guid: 5c134571eced48d18c07fb200ab16360, type: 2}
+  _settings: {fileID: 11400000, guid: 79cf6e5ef70b499a9e109cea71fb7fb3, type: 2}
 --- !u!23 &846350676
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -6157,7 +6149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15599a205d3bb9548b94a2544d4918c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 609830375}
+  _target: {fileID: 609830375}
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9206,6 +9198,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7d5f484f6c06c349b506a34a5d0e424, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _input: {fileID: 11400000, guid: 5c134571eced48d18c07fb200ab16360, type: 2}
 --- !u!1001 &1493239956
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13406,6 +13399,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2019134610}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &846350680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 846350673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ee4b9a7dd824b91b46f5e85e748a7d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _input: {fileID: 11400000, guid: 5c134571eced48d18c07fb200ab16360, type: 2}
+  _settings: {fileID: 11400000, guid: 51910e066d88491b9816fd61f5b4dd9b, type: 2}
+  _cameraPivot: {fileID: 609830375}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
