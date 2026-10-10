@@ -12,6 +12,18 @@ namespace OfficeWarfare.Player
         public bool IsGrounded { get; private set; }
         public Vector3 Velocity { get; private set; }
 
+        public float HorizontalSpeed01
+        {
+            get
+            {
+                if (_settings.MoveSpeed <= 0f)
+                    return 0f;
+
+                var horizontal = new Vector3(Velocity.x, 0f, Velocity.z);
+                return Mathf.Clamp01(horizontal.magnitude / _settings.MoveSpeed);
+            }
+        }
+
         private CharacterController _controller;
         private float _verticalVelocity;
         private float _lastGroundedTime = float.NegativeInfinity;
@@ -37,7 +49,7 @@ namespace OfficeWarfare.Player
             velocity.y = GetVerticalVelocity();
 
             _controller.Move(velocity * Time.deltaTime);
-            Velocity = velocity;
+            Velocity = _controller.velocity;
         }
 
         private Vector3 GetHorizontalVelocity()
