@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: InputReader
   m_EditorClassIdentifier: 
   _actions: {fileID: -944628639613478452, guid: 715fe3c36ad741748ddcb584f335652e, type: 3}
+  _lookWarmupTime: 0.1

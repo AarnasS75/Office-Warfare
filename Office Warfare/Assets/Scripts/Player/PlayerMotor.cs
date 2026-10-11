@@ -6,13 +6,16 @@ namespace OfficeWarfare.Player
     [RequireComponent(typeof(CharacterController))]
     public class PlayerMotor : MonoBehaviour
     {
+        private const float InputDeadZone = 0.01f;
+
         [SerializeField] private InputReader _input;
         [SerializeField] private PlayerMovementSettings _settings;
 
         public bool IsGrounded { get; private set; }
+        public bool IsSprinting { get; private set; }
         public Vector3 Velocity { get; private set; }
 
-        public float HorizontalSpeed01
+        public float HorizontalSpeedRatio
         {
             get
             {
@@ -20,11 +23,14 @@ namespace OfficeWarfare.Player
                     return 0f;
 
                 var horizontal = new Vector3(Velocity.x, 0f, Velocity.z);
-                return Mathf.Clamp01(horizontal.magnitude / _settings.MoveSpeed);
+                return horizontal.magnitude / _settings.MoveSpeed;
             }
         }
 
+        public float HorizontalSpeed01 => Mathf.Clamp01(HorizontalSpeedRatio);
+
         private CharacterController _controller;
+        private Vector3 _horizontalVelocity;
         private float _verticalVelocity;
         private float _lastGroundedTime = float.NegativeInfinity;
         private float _lastJumpPressedTime = float.NegativeInfinity;
@@ -45,21 +51,47 @@ namespace OfficeWarfare.Player
             if (IsGrounded)
                 _lastGroundedTime = Time.time;
 
-            var velocity = GetHorizontalVelocity();
-            velocity.y = GetVerticalVelocity();
+            UpdateHorizontalVelocity();
+            UpdateVerticalVelocity();
 
-            _controller.Move(velocity * Time.deltaTime);
+            var motion = _horizontalVelocity;
+            motion.y = _verticalVelocity;
+
+            var collisions = _controller.Move(motion * Time.deltaTime);
+            if ((collisions & CollisionFlags.Above) != 0 && _verticalVelocity > 0f)
+                _verticalVelocity = 0f;
+
             Velocity = _controller.velocity;
         }
 
-        private Vector3 GetHorizontalVelocity()
+        private void UpdateHorizontalVelocity()
         {
             var moveInput = _input.Move;
-            var direction = transform.right * moveInput.x + transform.forward * moveInput.y;
-            return Vector3.ClampMagnitude(direction, 1f) * _settings.MoveSpeed;
+            IsSprinting = _input.IsSprintHeld && CanSprint(moveInput);
+
+            var direction = Vector3.ClampMagnitude(transform.right * moveInput.x + transform.forward * moveInput.y, 1f);
+            var targetVelocity = direction * (IsSprinting ? _settings.SprintSpeed : _settings.MoveSpeed);
+
+            _horizontalVelocity = Vector3.MoveTowards(_horizontalVelocity, targetVelocity, GetAcceleration(direction) * Time.deltaTime);
         }
 
-        private float GetVerticalVelocity()
+        private bool CanSprint(Vector2 moveInput)
+        {
+            if (_settings.SprintRequiresForward)
+                return moveInput.y > InputDeadZone;
+
+            return moveInput.sqrMagnitude > InputDeadZone;
+        }
+
+        private float GetAcceleration(Vector3 direction)
+        {
+            if (!IsGrounded)
+                return _settings.AirAcceleration;
+
+            return direction.sqrMagnitude > InputDeadZone ? _settings.GroundAcceleration : _settings.GroundDeceleration;
+        }
+
+        private void UpdateVerticalVelocity()
         {
             if (IsGrounded && _verticalVelocity < 0f)
                 _verticalVelocity = _settings.GroundedVerticalVelocity;
@@ -69,13 +101,24 @@ namespace OfficeWarfare.Player
 
             if (jumpBuffered && withinCoyoteTime)
             {
-                _verticalVelocity = Mathf.Sqrt(2f * _settings.JumpHeight * -_settings.Gravity);
+                _verticalVelocity = _settings.JumpVelocity;
                 _lastJumpPressedTime = float.NegativeInfinity;
                 _lastGroundedTime = float.NegativeInfinity;
             }
 
-            _verticalVelocity += _settings.Gravity * Time.deltaTime;
-            return _verticalVelocity;
+            _verticalVelocity += GetGravity() * Time.deltaTime;
+            _verticalVelocity = Mathf.Max(_verticalVelocity, -_settings.MaxFallSpeed);
+        }
+
+        private float GetGravity()
+        {
+            if (_verticalVelocity < 0f)
+                return _settings.Gravity * _settings.FallGravityMultiplier;
+
+            if (!_input.IsJumpHeld)
+                return _settings.Gravity * _settings.JumpCutGravityMultiplier;
+
+            return _settings.Gravity;
         }
     }
 }

@@ -9,6 +9,7 @@ namespace OfficeWarfare.Player
         private static readonly int SpeedParam = Animator.StringToHash("Speed");
         private static readonly int AttackParam = Animator.StringToHash("Attack");
         private static readonly int AttackSpeedParam = Animator.StringToHash("AttackSpeed");
+        private static readonly int LocomotionSpeedParam = Animator.StringToHash("LocomotionSpeed");
         private static readonly int AttackState = Animator.StringToHash("Attack");
 
         [SerializeField] private InputReader _input;
@@ -29,6 +30,7 @@ namespace OfficeWarfare.Player
         {
             var speed = _motor.IsGrounded ? _motor.HorizontalSpeed01 : 0f;
             _animator.SetFloat(SpeedParam, speed, _settings.SpeedDampTime, Time.deltaTime);
+            _animator.SetFloat(LocomotionSpeedParam, Mathf.Max(1f, _motor.HorizontalSpeedRatio), _settings.SpeedDampTime, Time.deltaTime);
             _animator.SetFloat(AttackSpeedParam, _settings.AttackSpeed);
         }
 

@@ -12,9 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d803e9ad0ca466c9252bb0c2aee3794, type: 3}
   m_Name: PlayerMovementSettings
   m_EditorClassIdentifier: 
-  _moveSpeed: 20
-  _jumpHeight: 5
-  _gravityMultiplier: 2
+  _moveSpeed: 6
+  _groundAcceleration: 70
+  _groundDeceleration: 90
+  _sprintSpeed: 9
+  _sprintRequiresForward: 1
+  _airAcceleration: 30
+  _jumpHeight: 1.2
+  _timeToApex: 0.32
+  _fallGravityMultiplier: 1.6
+  _jumpCutGravityMultiplier: 2.5
+  _maxFallSpeed: 20
   _coyoteTime: 0.1
-  _jumpBufferTime: 0.1
+  _jumpBufferTime: 0.12
   _groundedVerticalVelocity: -2
